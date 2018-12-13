@@ -1,0 +1,5 @@
+flask
+flask-restplus
+zipcodes
+gunicorn
+PyOpenSSL

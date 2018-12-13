@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1 style="margin-top: 5%;">&gt; Zip-code Microservice Sample App</h1>
+<p style="margin-top:0px; font-size:8px;">woo Kubernetes isn't scary anymore is it?</p>
+<br>
+
+
+<iframe width="100%" height="400px" src="http://localhost:8080/styles/osm-bright/#11/36.7421/-76.2218">
+      <p>Your browser does not support iframes.</p>
+    </iframe>
+
+<pre >
+[
+  {
+    "city": "CHESAPEAKE",
+    "country": "US",
+    "long": -76.3,
+    "active": true,
+    "state": "VA",
+    "zip_code_type": "STANDARD",
+    "lat": 36.67,
+    "world_region": "NA",
+    "zip_code": "23322"
+  }
+]
+</pre>
+<br>
+<form method="post" target="_self">
+    <p style="" align="center"><input type="text" id="text" name="text" style="width:50%; margin-left:2%;" autofocus/><input style="margin-left:2%" type="submit" class="btn btn-primary" value="Search" /></p>
+
+</form>
+
+{% endblock %}

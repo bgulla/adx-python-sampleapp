@@ -1,6 +1,9 @@
-from flask import Flask, Blueprint
+from flask import Flask, render_template, redirect, url_for, request, session, flash, g, abort, Blueprint
 from flask_restplus import Api, Resource, fields
 import zipcodes
+
+app = Flask(__name__)
+
 
 api_v1 = Blueprint('api', __name__, url_prefix='/api/1')
 
@@ -15,10 +18,6 @@ def abort_if_todo_doesnt_exist(todo_id):
     if False:
         api.abort(404, "Todo {} doesn't exist".format(todo_id))
 
-parser = api.parser()
-#parser.add_argument('task', type=str, required=True, help='required zipcode', location='form')
-#parser.add_argument('task', type=str, required=True, help='required zipcode', location='form')
-
 
 @ns.route('/<string:zipcode_id>')
 #@api.doc(responses={404: 'Zip-code not found'}, params={'zipcode_id': 'The Zip-code'})
@@ -32,9 +31,23 @@ class Todo(Resource):
         #return zipcodes.matching(str(zipcode_id))
 
 
+@app.route('/', methods=['GET', 'POST']) #this is called a decorator
+def home():
+    cow="MOOOO"
+    if request.method == 'POST':
+        if request.form['text']:
+            moo_text = request.form['text']
+            cow = "mooo!"
+#            application.logger.info('[Moo] '+ unicode(now.replace(microsecond=0)) + "\t" + request.remote_addr + "\t" + moo_text)
+    return render_template("index.html", cow=cow)
+
 
 if __name__ == '__main__':
-    app = Flask(__name__)
+    # TODO: Copy logger from the other example
+
+
     app.register_blueprint(api_v1)
     app.config['SWAGGER_UI_DOC_EXPANSION'] = "full"
     app.run(port=8880,debug=True)
+
+    #http://localhost:8080/styles/klokantech-basic/#12.61/38.92915/-77.22274
