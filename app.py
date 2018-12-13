@@ -41,7 +41,7 @@ def home():
             moo_text = request.form['text']
             cow = "mooo!"
 #            application.logger.info('[Moo] '+ unicode(now.replace(microsecond=0)) + "\t" + request.remote_addr + "\t" + moo_text)
-    return render_template("index.html", cow=cow, map_url=map_url map_style=map_style)
+    return render_template("index.html", cow=cow, map_url=map_url,map_style=map_style)
 
 
 if __name__ == '__main__':
