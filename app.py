@@ -33,13 +33,15 @@ class Todo(Resource):
 
 @app.route('/', methods=['GET', 'POST']) #this is called a decorator
 def home():
-    cow="MOOOO"
+    map_url = "10.0.5.11:8002"
+    map_style = "osm-bright"
+
     if request.method == 'POST':
         if request.form['text']:
             moo_text = request.form['text']
             cow = "mooo!"
 #            application.logger.info('[Moo] '+ unicode(now.replace(microsecond=0)) + "\t" + request.remote_addr + "\t" + moo_text)
-    return render_template("index.html", cow=cow)
+    return render_template("index.html", cow=cow, map_url=map_url map_style=map_style)
 
 
 if __name__ == '__main__':
@@ -48,6 +50,6 @@ if __name__ == '__main__':
 
     app.register_blueprint(api_v1)
     app.config['SWAGGER_UI_DOC_EXPANSION'] = "full"
-    app.run(port=8880,debug=True)
+    app.run(port=8880,debug=True, host="0.0.0.0")
 
     #http://localhost:8080/styles/klokantech-basic/#12.61/38.92915/-77.22274
