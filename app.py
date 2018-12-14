@@ -18,15 +18,15 @@ api = Api(api_v1, version='1.0', title='ADX Zip-code Microservice',
 
 ns = api.namespace('zipcode', description='Did You Know?! The term ZIP is an acronym for Zone Improvement Plan')
 
-# Global vars that need to die
-map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"
+# Global vars that need to die3
+map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"  # oc set env <object-selection> KEY=VALUE
 map_style = "osm-bright"
 default_lat = "38.95"
 default_long = "-77.34"
 PROTOCOL = "http"
 
 # ENV-based vars
-MAP_SERVER_URI = os.getenv('MAP_SERVER_URI', 'localhost:8080')
+MAP_API_URI = os.getenv('MAP_API_URI', 'localhost:8080')
 ZIPCODE_API_URI = os.getenv('ZIPCODE_API_URI', 'localhost:8080')
 SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
 DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
@@ -52,10 +52,10 @@ class Todo(Resource):
         abort_if_todo_doesnt_exist(zipcode_id) # Replace this with syntax checker
         return zipcodes.matching(str(zipcode_id))
 
-def get_coords(zipcode, map_connection_string="http://localhost:8080"):
+def get_coords(zipcode, map_connection_string=ZIPCODE_API_URI):
     """
     """
-    url = map_connection_string + "/api/1/zipcode/" + str(zipcode)
+    url = PROTOCOL + map_connection_string + "/api/1/zipcode/" + str(zipcode)
     app.logger.info("[API-call] ", url)
     response = requests.get(url=url)
     loc_map = response.json()[0]
