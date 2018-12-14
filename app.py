@@ -45,7 +45,7 @@ def get_coords(zipcode, map_connection_string="http://localhost:8080"):
 
 @app.route('/', methods=['GET', 'POST']) #this is called a decorator
 def home():
-    map_url = "openmaptiles-server:80"
+    map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"
     map_style = "osm-bright"
     lat = "38.95"
     long = "-77.34"
