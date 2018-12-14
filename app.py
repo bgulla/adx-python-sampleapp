@@ -5,6 +5,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from flask_restplus import Api, Resource, fields
 import zipcodes
 import json
+import os
 
 app = Flask(__name__)
 app.secret_key = 'You Will Never Guess'
@@ -22,6 +23,19 @@ map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"
 map_style = "osm-bright"
 default_lat = "38.95"
 default_long = "-77.34"
+PROTOCOL = "http"
+
+# ENV-based vars
+MAP_SERVER_URI = os.getenv('MAP_SERVER_URI', 'localhost:8080')
+ZIPCODE_API_URI = os.getenv('ZIPCODE_API_URI', 'localhost:8080')
+SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
+DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
+
+# Init some session vars
+session['theme']= DEFAULT_THEME
+
+if SSL_ENABLED == "true":
+    PROTOCOL = "https"
 
 def abort_if_todo_doesnt_exist(todo_id):
     if False:
@@ -35,9 +49,8 @@ class Todo(Resource):
     @api.doc(description='US Zip-codes only in Integer format')
     def get(self, zipcode_id):
         '''Fetch a given resource'''
-        abort_if_todo_doesnt_exist(zipcode_id)
+        abort_if_todo_doesnt_exist(zipcode_id) # Replace this with syntax checker
         return zipcodes.matching(str(zipcode_id))
-        #return zipcodes.matching(str(zipcode_id))
 
 def get_coords(zipcode, map_connection_string="http://localhost:8080"):
     """
@@ -56,9 +69,7 @@ def home():
     loc_json = ""
     zip_code = ""
 
-    if 'theme' not in session:
-        session['theme']='cosmo'
-
+    #Check to see if we need to update the theme
     theme_request = request.args.get('theme')
     if theme_request is not None:
         session['theme'] = theme_request
@@ -85,5 +96,3 @@ if __name__ == '__main__':
     app.register_blueprint(api_v1)
     app.config['SWAGGER_UI_DOC_EXPANSION'] = "full"
     app.run(port=8080,debug=True, host="0.0.0.0")
-
-    #http://localhost:8080/styles/klokantech-basic/#12.61/38.92915/-77.22274
