@@ -31,7 +31,7 @@ class Todo(Resource):
     def get(self, zipcode_id):
         '''Fetch a given resource'''
         abort_if_todo_doesnt_exist(zipcode_id)
-        return zipcodes.matching(str(zipcode_id))a
+        return zipcodes.matching(str(zipcode_id))
         #return zipcodes.matching(str(zipcode_id))
 
 def get_coords(zipcode, map_connection_string="http://localhost:8080"):
