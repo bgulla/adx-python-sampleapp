@@ -31,10 +31,10 @@ class Todo(Resource):
     def get(self, zipcode_id):
         '''Fetch a given resource'''
         abort_if_todo_doesnt_exist(zipcode_id)
-        return zipcodes.matching(str(zipcode_id))
+        return zipcodes.matching(str(zipcode_id))a
         #return zipcodes.matching(str(zipcode_id))
 
-def get_coords(zipcode, map_connection_string="http://10.0.5.11:8880"):
+def get_coords(zipcode, map_connection_string="http://localhost:8080"):
     """
     """
     url = map_connection_string + "/api/1/zipcode/" + str(zipcode)
@@ -45,7 +45,7 @@ def get_coords(zipcode, map_connection_string="http://10.0.5.11:8880"):
 
 @app.route('/', methods=['GET', 'POST']) #this is called a decorator
 def home():
-    map_url = "10.0.5.11:8002"
+    map_url = "openmaptiles-server:80"
     map_style = "osm-bright"
     lat = "38.95"
     long = "-77.34"
@@ -83,6 +83,6 @@ if __name__ == '__main__':
     # TODO: Copy logger from the other example
     app.register_blueprint(api_v1)
     app.config['SWAGGER_UI_DOC_EXPANSION'] = "full"
-    app.run(port=8880,debug=True, host="0.0.0.0")
+    app.run(port=8080,debug=True, host="0.0.0.0")
 
     #http://localhost:8080/styles/klokantech-basic/#12.61/38.92915/-77.22274
