@@ -23,7 +23,7 @@ map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"  # oc set 
 map_style = "osm-bright"
 default_lat = "38.95"
 default_long = "-77.34"
-PROTOCOL = "http"
+PROTOCOL = "http://"
 
 # ENV-based vars
 MAP_API_URI = os.getenv('MAP_API_URI', 'localhost:8080')
@@ -35,7 +35,7 @@ DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
 #session['theme']= DEFAULT_THEME
 
 if SSL_ENABLED == "true":
-    PROTOCOL = "https"
+    PROTOCOL = "https://"
 
 def abort_if_todo_doesnt_exist(todo_id):
     if False:
