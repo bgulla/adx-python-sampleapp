@@ -17,6 +17,11 @@ api = Api(api_v1, version='1.0', title='ADX Zip-code Microservice',
 
 ns = api.namespace('zipcode', description='Did You Know?! The term ZIP is an acronym for Zone Improvement Plan')
 
+# Global vars that need to die
+map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"
+map_style = "osm-bright"
+default_lat = "38.95"
+default_long = "-77.34"
 
 def abort_if_todo_doesnt_exist(todo_id):
     if False:
@@ -38,20 +43,17 @@ def get_coords(zipcode, map_connection_string="http://localhost:8080"):
     """
     """
     url = map_connection_string + "/api/1/zipcode/" + str(zipcode)
+    app.logger.info("[API-call] ", url)
     response = requests.get(url=url)
     loc_map = response.json()[0]
     return loc_map['lat'], loc_map['long'], response.text
 
 
-@app.route('/', methods=['GET', 'POST']) #this is called a decorator
+@app.route('/', methods=['GET', 'POST']) #this is the meat 
 def home():
-    map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"
-    map_style = "osm-bright"
-    lat = "38.95"
-    long = "-77.34"
+    lat=default_lat
+    long=default_long
     loc_json = ""
-    display_logo = ""
-    #zip_code="20191"
     zip_code = ""
 
     if 'theme' not in session:
@@ -60,15 +62,14 @@ def home():
     theme_request = request.args.get('theme')
     if theme_request is not None:
         session['theme'] = theme_request
-
+        app.logger.info("[THEME] Setting current theme to: ", theme_request)
 
     if request.method == 'POST':
         if request.form['zipcode']:
             zip_code = request.form['zipcode']
+            # Call the API to get the info on the requested zipcode.
             lat, long, loc_json = get_coords(zip_code)
-            #display_logo = "display: none;"
-#            application.logger.info('[Moo] '+ unicode(now.replace(microsecond=0)) + "\t" + request.remote_addr + "\t" + moo_text)
-    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo=display_logo, zip_code=zip_code, theme=session['theme'])
+    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'])
 
 @app.before_first_request
 def setup_logging():
