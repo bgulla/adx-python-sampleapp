@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="display:none;" class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Holy guacamole!</strong> This is just a placeholder. <a href='https://getbootstrap.com/docs/4.1/components/alerts/'>Docs.</a>
+<div style="{{display_alert}}" class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Success! </strong> Displaying results for {{zip_code}}.
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>

@@ -68,6 +68,8 @@ def home():
     long=default_long
     loc_json = ""
     zip_code = ""
+    display_alert = "display:none;"
+
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
 
@@ -82,7 +84,8 @@ def home():
             zip_code = request.form['zipcode']
             # Call the API to get the info on the requested zipcode.
             lat, long, loc_json = get_coords(zip_code)
-    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'])
+            display_alert = ""
+    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert)
 
 @app.before_first_request
 def setup_logging():
