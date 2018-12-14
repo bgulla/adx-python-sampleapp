@@ -1,13 +1,13 @@
 import logging
 import sys
 import requests
-from flask import Flask, render_template, redirect, url_for, request, session, flash, g, abort, Blueprint, jsonify
+from flask import Flask, render_template, redirect, url_for, request, session, flash, g, abort, Blueprint, jsonify, session
 from flask_restplus import Api, Resource, fields
 import zipcodes
 import json
 
 app = Flask(__name__)
-
+app.secret_key = 'You Will Never Guess'
 
 api_v1 = Blueprint('api', __name__, url_prefix='/api/1')
 
@@ -47,31 +47,28 @@ def get_coords(zipcode, map_connection_string="http://10.0.5.11:8880"):
 def home():
     map_url = "10.0.5.11:8002"
     map_style = "osm-bright"
-    lat = "36.67"
-    long = "-76.3"
-    loc_json = "empty"
+    lat = "38.95"
+    long = "-77.34"
+    loc_json = ""
+    display_logo = ""
+    #zip_code="20191"
+    zip_code = ""
+
+    if 'theme' not in session:
+        session['theme']='cosmo'
+
+    theme_request = request.args.get('theme')
+    if theme_request is not None:
+        session['theme'] = theme_request
+
 
     if request.method == 'POST':
         if request.form['zipcode']:
             zip_code = request.form['zipcode']
             lat, long, loc_json = get_coords(zip_code)
+            #display_logo = "display: none;"
 #            application.logger.info('[Moo] '+ unicode(now.replace(microsecond=0)) + "\t" + request.remote_addr + "\t" + moo_text)
-    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json)
-
-@app.route('/dark', methods=['GET', 'POST']) #this is called a decorator
-def home2():
-    map_url = "10.0.5.11:8002"
-    map_style = "osm-bright"
-    lat = "36.67"
-    long = "-76.3"
-    loc_json = "empty"
-
-    if request.method == 'POST':
-        if request.form['zipcode']:
-            zip_code = request.form['zipcode']
-            lat, long, loc_json = get_coords(zip_code)
-#            application.logger.info('[Moo] '+ unicode(now.replace(microsecond=0)) + "\t" + request.remote_addr + "\t" + moo_text)
-    return render_template("dark.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json)
+    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo=display_logo, zip_code=zip_code, theme=session['theme'])
 
 @app.before_first_request
 def setup_logging():
