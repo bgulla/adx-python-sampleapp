@@ -32,7 +32,7 @@ SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
 DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
 
 # Init some session vars
-session['theme']= DEFAULT_THEME
+#session['theme']= DEFAULT_THEME
 
 if SSL_ENABLED == "true":
     PROTOCOL = "https"
@@ -68,6 +68,8 @@ def home():
     long=default_long
     loc_json = ""
     zip_code = ""
+    if not session.has_key('theme'):
+        session['theme'] = DEFAULT_THEME
 
     #Check to see if we need to update the theme
     theme_request = request.args.get('theme')
