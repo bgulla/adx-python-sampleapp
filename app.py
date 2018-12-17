@@ -82,6 +82,10 @@ def is_map_server_online():
     app.logger.info("[FATAL] Unable to check for Map Server Connectivity")
     return False
 
+@app.route('/status', methods=['GET', 'POST']) #this is the meat
+def healthcheck():
+    return "HEALTHY"
+
 @app.route('/', methods=['GET', 'POST']) #this is the meat 
 def home():
     lat=default_lat
