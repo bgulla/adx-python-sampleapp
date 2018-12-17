@@ -33,6 +33,8 @@ MAP_API_URI = os.getenv('MAP_API_URI', 'localhost:8080')
 ZIPCODE_API_URI = os.getenv('ZIPCODE_API_URI', 'localhost:8080')
 SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
 DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
+DISABLE_COMPONENT = "display:none;"
+BLANK = ""
 
 map_url = PROTOCOL + MAP_API_URI
 
@@ -88,18 +90,21 @@ def is_map_server_online():
 def home():
     lat=default_lat
     long=default_long
-    loc_json = ""
-    zip_code = ""
-    error_msg = ""
-    display_error = "display:none;"
-    display_alert = "display:none;"
+    loc_json = BLANK
+    zip_code = BLANK
+    error_msg = BLANK
+    display_error = DISABLE_COMPONENT
+    display_alert = DISABLE_COMPONENT
 
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
 
     if not is_map_server_online():
-        display_error = ""
+        display_error = BLANK
         error_msg = "Unable to connect to map server at ", MAP_API_URI
+    else:
+        display_error = DISABLE_COMPONENT
+        error_msg = BLANK
 
     #Check to see if we need to update the theme
     theme_request = request.args.get('theme')
@@ -112,7 +117,7 @@ def home():
             zip_code = request.form['zipcode']
             # Call the API to get the info on the requested zipcode.
             lat, long, loc_json = get_coords(zip_code)
-            display_alert = ""
+            display_alert = BLANK
     return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert, display_error=display_error, error_msg=error_msg)
 
 @app.before_first_request
