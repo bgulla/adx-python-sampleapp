@@ -96,8 +96,8 @@ def home():
     display_alert = DISABLE_COMPONENT
     display_error = DISABLE_COMPONENT
 
-    if not session.has_key('theme'):
-        session['theme'] = DEFAULT_THEME
+    #if not session.has_key('theme'):
+    #    session['theme'] = DEFAULT_THEME
 
     if not is_map_server_online():
         display_error = BLANK
