@@ -90,8 +90,11 @@ def healthcheck():
 def home():
     lat=default_lat
     long=default_long
-    loc_json, zip_code,error_msg = BLANK
-    display_alert, display_error = DISABLE_COMPONENT
+    loc_json = BLANK
+    zip_code = BLANK
+    error_msg = BLANK
+    display_alert = DISABLE_COMPONENT
+    display_error = DISABLE_COMPONENT
 
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
