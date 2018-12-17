@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="margin-top:0; {{display_alert}}" class="alert alert-success alert-dismissible fade show" role="alert">
+<span style="margin-top:0; {{display_alert}}" class="alert alert-success alert-dismissible fade show" role="alert">
   <strong>Success! </strong> Displaying results for {{zip_code}}.
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
-</div>
+</span>
+<span style="margin-top:0; {{display_error}}" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{error_msg}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</span>
 
 <h1 style="margin-top: 5%;">&gt; Zip-code Microservice Sample App</h1>
 <p style="margin-top:0px; font-size:8px;">wooooooo Kubernetes isn't scary anymore is it?</p>

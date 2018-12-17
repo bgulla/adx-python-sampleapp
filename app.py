@@ -6,6 +6,8 @@ from flask_restplus import Api, Resource, fields
 import zipcodes
 import json
 import os
+import socket
+from contextlib import closing
 
 app = Flask(__name__)
 app.secret_key = 'You Will Never Guess'
@@ -19,17 +21,20 @@ api = Api(api_v1, version='1.0', title='ADX Zip-code Microservice',
 ns = api.namespace('zipcode', description='Did You Know?! The term ZIP is an acronym for Zone Improvement Plan')
 
 # Global vars that need to die3
-map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"  # oc set env <object-selection> KEY=VALUE
+#map_url = "https://openmaptiles-server-arc-team.apps.adx.dicelab.net"  # oc set env <object-selection> KEY=VALUE
 map_style = "osm-bright"
 default_lat = "38.95"
 default_long = "-77.34"
 PROTOCOL = "http://"
 
 # ENV-based vars
+FLASK_PORT = int(os.getenv('FLASK_PORT', 8080))
 MAP_API_URI = os.getenv('MAP_API_URI', 'localhost:8080')
 ZIPCODE_API_URI = os.getenv('ZIPCODE_API_URI', 'localhost:8080')
 SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
 DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
+
+map_url = PROTOCOL + MAP_API_URI
 
 # Init some session vars
 #session['theme']= DEFAULT_THEME
@@ -56,11 +61,28 @@ def get_coords(zipcode, map_connection_string=ZIPCODE_API_URI):
     """
     """
     url = PROTOCOL + map_connection_string + "/api/1/zipcode/" + str(zipcode)
-    app.logger.info("[API-call] ", url)
+    app.logger.info("[API-call] "+ url)
     response = requests.get(url=url)
     loc_map = response.json()[0]
     return loc_map['lat'], loc_map['long'], response.text
 
+
+def is_map_server_online():
+    """
+
+    :return:
+    """
+    host =""
+    port = 0
+
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+        if sock.connect_ex((host, port)) == 0:
+            return True
+        else:
+            app.logger.info("[FATAL] Map server not online "+ MAP_API_URI)
+            return False
+    app.logger.info("[FATAL] Unable to check for Map Server Connectivity")
+    return False
 
 @app.route('/', methods=['GET', 'POST']) #this is the meat 
 def home():
@@ -68,10 +90,16 @@ def home():
     long=default_long
     loc_json = ""
     zip_code = ""
+    error_msg = ""
+    display_error = "display:none;"
     display_alert = "display:none;"
 
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
+
+    if not is_map_server_online():
+        display_error = ""
+        error_msg = "Unable to connect to map server at ", MAP_API_URI
 
     #Check to see if we need to update the theme
     theme_request = request.args.get('theme')
@@ -85,7 +113,7 @@ def home():
             # Call the API to get the info on the requested zipcode.
             lat, long, loc_json = get_coords(zip_code)
             display_alert = ""
-    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert)
+    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert, display_error=display_error, error_msg=error_msg)
 
 @app.before_first_request
 def setup_logging():
@@ -100,4 +128,4 @@ if __name__ == '__main__':
     # TODO: Copy logger from the other example
     app.register_blueprint(api_v1)
     app.config['SWAGGER_UI_DOC_EXPANSION'] = "full"
-    app.run(port=8080,debug=True, host="0.0.0.0")
+    app.run(port=FLASK_PORT,debug=True, host="0.0.0.0")
