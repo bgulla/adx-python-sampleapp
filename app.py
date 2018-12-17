@@ -32,17 +32,13 @@ FLASK_PORT = int(os.getenv('FLASK_PORT', 8080))
 MAP_API_URI = os.getenv('MAP_API_URI', 'localhost:8080')
 ZIPCODE_API_URI = os.getenv('ZIPCODE_API_URI', 'localhost:8080')
 SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
-DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmo')
 DISABLE_COMPONENT = "display:none;"
 BLANK = ""
 
-map_url = PROTOCOL + MAP_API_URI
-
-# Init some session vars
-#session['theme']= DEFAULT_THEME
-
 if SSL_ENABLED == "true":
     PROTOCOL = "https://"
+
+map_url = PROTOCOL + MAP_API_URI
 
 def abort_if_todo_doesnt_exist(todo_id):
     if False:
@@ -90,11 +86,8 @@ def is_map_server_online():
 def home():
     lat=default_lat
     long=default_long
-    loc_json = BLANK
-    zip_code = BLANK
-    error_msg = BLANK
-    display_error = DISABLE_COMPONENT
-    display_alert = DISABLE_COMPONENT
+    loc_json, zip_code,error_msg = BLANK
+    display_alert, display_error = DISABLE_COMPONENT
 
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
