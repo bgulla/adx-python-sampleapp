@@ -29,16 +29,20 @@ PROTOCOL = "http://"
 
 # ENV-based vars
 FLASK_PORT = int(os.getenv('FLASK_PORT', 8080))
+
+MAP_API_PROTOCOL = os.getenv('MAP_API_PROTOCOL', 'http://')
 MAP_API_URI = os.getenv('MAP_API_URI', 'localhost:8080')
 ZIPCODE_API_URI = os.getenv('ZIPCODE_API_URI', 'localhost:8080')
 SSL_ENABLED = os.getenv('SSL_ENABLED', 'false')
+DEFAULT_THEME = os.getenv('DEFAULT_THEME', 'cosmos')
 DISABLE_COMPONENT = "display:none;"
 BLANK = ""
+
 
 if SSL_ENABLED == "true":
     PROTOCOL = "https://"
 
-map_url = PROTOCOL + MAP_API_URI
+map_url = MAP_API_PROTOCOL + MAP_API_URI
 
 def abort_if_todo_doesnt_exist(todo_id):
     if False:
@@ -70,8 +74,9 @@ def is_map_server_online():
 
     :return:
     """
-    host =""
-    port = 0
+    return False
+    host = MAP_API_URI.split(':')[0]
+    port = int(MAP_API_URI.split(':')[1])
 
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
         if sock.connect_ex((host, port)) == 0:
@@ -93,11 +98,12 @@ def home():
     loc_json = BLANK
     zip_code = BLANK
     error_msg = BLANK
+    theme_request = BLANK
     display_alert = DISABLE_COMPONENT
     display_error = DISABLE_COMPONENT
 
-    #if not session.has_key('theme'):
-    #    session['theme'] = DEFAULT_THEME
+    if not session.has_key('theme'):
+        session['theme'] = DEFAULT_THEME
 
     if not is_map_server_online():
         display_error = BLANK
@@ -118,7 +124,7 @@ def home():
             # Call the API to get the info on the requested zipcode.
             lat, long, loc_json = get_coords(zip_code)
             display_alert = BLANK
-    return render_template("index.html", map_url=map_url,map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert, display_error=display_error, error_msg=error_msg)
+    return render_template("index.html", map_url=map_url, map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert, display_error=display_error, error_msg=error_msg)
 
 @app.before_first_request
 def setup_logging():
@@ -133,4 +139,14 @@ if __name__ == '__main__':
     # TODO: Copy logger from the other example
     app.register_blueprint(api_v1)
     app.config['SWAGGER_UI_DOC_EXPANSION'] = "full"
-    app.run(port=FLASK_PORT,debug=True, host="0.0.0.0")
+
+    CERT_FILE = os.getenv('CERT_FILE', '/secret/cert/zipcode-tls.crt')
+    KEY_FILE = os.getenv('KEY_FILE', '/secret/cert/zipcode-tls.key')
+    app.logger.info("[INIT] SSL_ENABLED: "+ SSL_ENABLED)
+    app.logger.info("[INIT] CERT_FILE: " + CERT_FILE)
+    app.logger.info("[INIT] KEY_FILE: "+ KEY_FILE)
+
+    if not SSL_ENABLED:
+        app.run(port=FLASK_PORT, debug=True, host="0.0.0.0")
+    else:
+        app.run(port=8443, ssl_context=(CERT_FILE, KEY_FILE), debug=True, host="0.0.0.0")
