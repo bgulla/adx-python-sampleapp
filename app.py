@@ -107,12 +107,13 @@ def home():
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
 
-    if not is_map_server_online():
+    """if not is_map_server_online():
         display_error = BLANK
         error_msg = "Unable to connect to map server at ", MAP_API_URI
     else:
         display_error = DISABLE_COMPONENT
         error_msg = BLANK
+    """
 
     #Check to see if we need to update the theme
     theme_request = request.args.get('theme')
