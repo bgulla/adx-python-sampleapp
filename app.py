@@ -41,6 +41,8 @@ BLANK = ""
 
 if SSL_ENABLED == "true":
     PROTOCOL = "https://"
+else:
+    PROTOCOL = "http://"
 
 map_url = MAP_API_PROTOCOL + MAP_API_URI
 
@@ -146,7 +148,7 @@ if __name__ == '__main__':
     app.logger.info("[INIT] CERT_FILE: " + CERT_FILE)
     app.logger.info("[INIT] KEY_FILE: "+ KEY_FILE)
 
-    if not SSL_ENABLED:
+    if not os.path.isfile(KEY_FILE) or not os.path.isfile(CERT_FILE):
         app.run(port=FLASK_PORT, debug=True, host="0.0.0.0")
     else:
         app.run(port=8443, ssl_context=(CERT_FILE, KEY_FILE), debug=True, host="0.0.0.0")
