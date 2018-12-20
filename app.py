@@ -104,8 +104,8 @@ def home():
     display_error = DISABLE_COMPONENT
 
     # HERE'S THE DEMO
-    #break_the_app = "background-color:red;"
-    break_the_app = ""
+    break_the_app = "style='background-color:red;'"
+    #break_the_app = ""
 
     if not session.has_key('theme'):
         session['theme'] = DEFAULT_THEME
