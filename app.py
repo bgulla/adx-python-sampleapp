@@ -130,7 +130,7 @@ def home():
             # Call the API to get the info on the requested zipcode.
             lat, long, loc_json = get_coords(zip_code)
             display_alert = BLANK
-    return render_template("index.html", break_the_app = break_the_app, map_url=map_url, map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert, display_error=display_error, error_msg=error_msg)
+    return render_template("index.html", break_the_app=break_the_app, map_url=map_url, map_style=map_style, lat=lat, long=long, loc_json = loc_json, display_logo="", zip_code=zip_code, theme=session['theme'], display_alert=display_alert, display_error=display_error, error_msg=error_msg)
 
 @app.before_first_request
 def setup_logging():
