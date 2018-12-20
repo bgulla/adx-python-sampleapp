@@ -10,7 +10,7 @@ import socket
 from contextlib import closing
 
 app = Flask(__name__)
-app.secret_key = 'You Will Never Guess'
+app.secret_key = '027f4073-a5ae-4ec6-a7e2-d730435a5867'
 
 api_v1 = Blueprint('api', __name__, url_prefix='/api/1')
 
