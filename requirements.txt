@@ -4,3 +4,6 @@ zipcodes
 gunicorn
 PyOpenSSL
 requests
+flask
+gunicorn
+PyOpenSSL
