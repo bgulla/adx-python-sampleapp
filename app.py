@@ -155,8 +155,8 @@ if __name__ == '__main__':
     app.logger.info("[INIT] CERT_FILE: " + CERT_FILE)
     app.logger.info("[INIT] KEY_FILE: "+ KEY_FILE)
 
-    if not os.path.isfile(KEY_FILE) or not os.path.isfile(CERT_FILE):
-        with mock.patch.object('getpass', "getuser", return_value='default'):
-            app.run(port=FLASK_PORT, debug=True, host="0.0.0.0")
-    else:
+#    if not os.path.isfile(KEY_FILE) or not os.path.isfile(CERT_FILE):
+    with mock.patch.object('getpass', "getuser", return_value='default'):
+        app.run(port=FLASK_PORT, debug=True, host="0.0.0.0")
+#    else:
         app.run(port=8443, ssl_context=(CERT_FILE, KEY_FILE), debug=True, host="0.0.0.0")
