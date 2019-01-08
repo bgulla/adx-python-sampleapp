@@ -2,7 +2,7 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 from OpenSSL import SSL
-from app import app
+from sampleapp import app
 
 if __name__ == "__main__":
 #    context = SSL.Context(SSL.SSLv23_METHOD)
