@@ -12,6 +12,9 @@ from mock import MagicMock
 
 mock = MagicMock()
 
+os.environ["USER"] = "1001"
+
+
 app = Flask(__name__)
 app.secret_key = '027f4073-a5ae-4ec6-a7e2-d730435a5867'
 
